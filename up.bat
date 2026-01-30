@@ -1,0 +1,1 @@
+@call .\script\bin\update_lab.bat
