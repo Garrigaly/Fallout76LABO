@@ -1,7 +1,7 @@
 {
-  "date": "2026-02-01",
-  "location": "福岡市",
-  "weather": "晴れ時々曇り",
-  "temperature": "5°C",
-  "temp_high_low": "9°C / 3°C"
+    "date": "2026-02-01",
+    "location": "福岡市",
+    "weather": "晴れ時々曇り",
+    "temperature": "5°C",
+    "temp_high_low": "9°C / 3°C"
 }

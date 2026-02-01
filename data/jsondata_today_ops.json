@@ -1,9 +1,10 @@
 {
-  "mode": "アップリンク",
-  "location": "バローズ",
-  "faction": "ロボット",
-  "mutations": [
-    "素早く・爆発",
-    "Per増加"
-  ]
+    "mode": "アップリンク",
+    "location": "バローズ",
+    "faction": "ロボット",
+    "mutations": [
+        "素早く",
+        "爆発",
+        "Per増加"
+    ]
 }
