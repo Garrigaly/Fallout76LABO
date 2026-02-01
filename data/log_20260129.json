@@ -1,0 +1,87 @@
+{
+  "report_metadata": {
+    "title": "研究報告書：Fallout76 投稿自動化システム（v1.9.0）",
+    "date": "2026-01-29",
+    "author": "ガリガリ博士",
+    "ai_assistant": "Gemini"
+  },
+  "purpose": "Fallout 76のデイリー情報をX（旧Twitter）へ投稿する際の作業時間を、約3時間から15分へ短縮すること。また、手動入力に伴う「情報の誤り」や「文字化け」をシステム的に排除し、安定した情報発信環境を構築する。",
+  "evolution": [
+    {
+      "version": "v1.2 - v1.5",
+      "change": "プログラムの基礎構築",
+      "solved": "手動入力ファイル（apratia.js）の廃止"
+    },
+    {
+      "version": "v1.6.0",
+      "change": "Basic JSONの独立",
+      "solved": "デイリーチャレンジ欠落時のエラー耐性を獲得"
+    },
+    {
+      "version": "v1.7.0",
+      "change": "UTF-8化 & パス固定",
+      "solved": "ターミナルの文字化けと、古い情報の混入を排除"
+    },
+    {
+      "version": "v1.8.0",
+      "change": "ハッシュタグ自動生成",
+      "solved": "イベント名から最短のハッシュタグを自動抽出"
+    },
+    {
+      "version": "v1.9.0",
+      "change": "冒頭ハッシュタグ配置",
+      "solved": "Xの文字数制限に対応。実戦用レイアウトの完成"
+    },
+    {
+      "version": "v1.3.0(指令書)",
+      "change": "マスターJSON形式",
+      "solved": "クリップボードコピー1回で全データを搬送可能に"
+    }
+  ],
+  "architecture": {
+    "data_layer": {
+      "brain": "JSON",
+      "files": [
+        {
+          "name": "jsondata_roadmap.json",
+          "description": "唯一のイベントスケジュール正解データ。"
+        },
+        {
+          "name": "jsondata_today_basic.json",
+          "description": "福岡市の天気と日付を格納。"
+        },
+        {
+          "name": "jsondata_today_ops/shop/challenge.json",
+          "description": "画像解析から得た生データ。"
+        }
+      ]
+    },
+    "processing_layer": {
+      "engine": "Node.js",
+      "file": "jsdata_today_xprint_image.js",
+      "description": "複数のJSONを統合し、博士流のレイアウトでテキストを生成。"
+    },
+    "delivery_layer": {
+      "robot": "PowerShell & Batch",
+      "file": "update_lab.bat",
+      "description": "クリップボード内のJSONを分配保存し、処理層を起動する司令塔。"
+    }
+  },
+  "technical_challenges": [
+    {
+      "issue": "情報の幽霊",
+      "solution": "絶対パス指定とファイルの物理的整理。"
+    },
+    {
+      "issue": "文字化け（Mojibake）",
+      "solution": "JS側 utf8 指定と PowerShell 側 chcp 65001 指定。"
+    }
+  ],
+  "protocol": [
+    "データ収集: スクショ3枚を撮影。",
+    "AI解析: Geminiへ画像をアップし「画像読み取り開始」。",
+    "データ搬送: Geminiが出力したJSONをコピーし、update_lab.bat を実行。",
+    "最終出力: 生成された today_daily_post.txt をXへ投稿。"
+  ],
+  "conclusion": "知的リソースを単純作業からクリエイティブな活動へシフト。YouTube用テロップ生成などへの拡張性も確保。"
+}

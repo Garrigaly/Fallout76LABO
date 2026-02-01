@@ -1,0 +1,81 @@
+{
+  "jsondata_today_basic.json": {
+    "date": "2026/01/31",
+    "day": "Saturday",
+    "location": "Fukuoka",
+    "weather": "曇り",
+    "temp": "1°C",
+    "wind": "2 mph South"
+  },
+  "jsondata_today_ops.json": {
+    "location": "チャールストン議事堂",
+    "enemy": "スパミュ",
+    "mode": "暗号解読",
+    "mutations": [
+      "爆発",
+      "高速・透明"
+    ]
+  },
+  "jsondata_today_atomicshop.json": [
+    {
+      "item": "ヤオ・グアイのラグ",
+      "price": "FREE",
+      "status": "Limited Time"
+    },
+    {
+      "item": "ヌカ・ガール・ボンバーのアイコン",
+      "price": "FREE",
+      "status": "Limited Time"
+    },
+    {
+      "item": "ヴィトマティック",
+      "price": "FREE",
+      "status": "Fallout 1st"
+    },
+    {
+      "item": "拷問台の作業台",
+      "price": 250,
+      "status": "50% OFF"
+    },
+    {
+      "item": "カウボーイバンドル",
+      "price": 900,
+      "status": "50% OFF"
+    },
+    {
+      "item": "ウォーキング・ファイアバンドル",
+      "price": 900,
+      "status": "50% OFF / Fallout 1st"
+    },
+    {
+      "item": "胸に手を当てるポーズ",
+      "price": 125,
+      "status": "50% OFF"
+    },
+    {
+      "item": "入植者の自警団塗装",
+      "price": 700,
+      "status": "50% OFF"
+    },
+    {
+      "item": "無料解体キット",
+      "price": "FREE",
+      "status": "Daily"
+    },
+    {
+      "item": "PERKカードパック",
+      "price": "FREE",
+      "status": "Fallout 1st"
+    }
+  ],
+  "jsondata_today_dailychallenge.json": [
+    "ワークショップまたはC.A.M.P.にベッド、テーブルまたは階段を作製する (0/3)",
+    "ガルパーを倒す (0/3)",
+    "スパミュの腕に重傷を負わせる (0/2)",
+    "メガ・スロスをカメラで撮影する (0/1)",
+    "アーマー、武器、パワーアーマーを修理する (2/10)",
+    "Event: 'The Mothman Equinox' を完了する (4/5)",
+    "エピック：レジェンダリーモジュールを集める (4/20)",
+    "ヤオ・グアイを倒す (0/3)"
+  ]
+}

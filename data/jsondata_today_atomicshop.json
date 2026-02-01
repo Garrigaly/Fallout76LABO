@@ -1,0 +1,54 @@
+{
+  "items": [
+    {
+      "name": "ヤオ・グライのラグ",
+      "price": "Free",
+      "status": "Limited Time"
+    },
+    {
+      "name": "ヌカ・ガール・ボンバーのアイコン",
+      "price": "Free",
+      "status": "Limited Time"
+    },
+    {
+      "name": "無料の補給物資(レベル2)",
+      "price": "Free",
+      "status": "Daily Free"
+    },
+    {
+      "name": "無料修理キット",
+      "price": "Free",
+      "status": "Fallout 1st"
+    },
+    {
+      "name": "チャンプ",
+      "price": "125 Atoms",
+      "status": "50% OFF"
+    },
+    {
+      "name": "キャッシュケージ・パワーアーマースキン",
+      "price": "600 Atoms",
+      "status": "50% OFF"
+    },
+    {
+      "name": "密造酒の作業台",
+      "price": "250 Atoms",
+      "status": "50% OFF"
+    },
+    {
+      "name": "カウボーイバンドル",
+      "price": "900 Atoms",
+      "status": "50% OFF"
+    },
+    {
+      "name": "ヴィトマティック",
+      "price": "Fallout 1st",
+      "status": "Fallout 1st"
+    },
+    {
+      "name": "ウォーキング・ファイアバンドル",
+      "price": "900 Atoms",
+      "status": "Fallout 1st / 50% OFF"
+    }
+  ]
+}

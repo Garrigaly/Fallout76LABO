@@ -1,0 +1,84 @@
+{
+  "jsondata_today_basic.json": {
+    "date": "2026-02-01",
+    "location": "福岡市",
+    "weather": "晴れ時々曇り",
+    "temperature": "5°C",
+    "temp_high_low": "9°C / 3°C"
+  },
+  "jsondata_today_ops.json": {
+    "mode": "アップリンク",
+    "location": "バローズ",
+    "faction": "ロボット",
+    "mutations": [
+      "素早く・爆発",
+      "Per増加"
+    ]
+  },
+  "jsondata_today_atomicshop.json": {
+    "items": [
+      {
+        "name": "ヤオ・グライのラグ",
+        "price": "Free",
+        "status": "Limited Time"
+      },
+      {
+        "name": "ヌカ・ガール・ボンバーのアイコン",
+        "price": "Free",
+        "status": "Limited Time"
+      },
+      {
+        "name": "無料の補給物資(レベル2)",
+        "price": "Free",
+        "status": "Daily Free"
+      },
+      {
+        "name": "無料修理キット",
+        "price": "Free",
+        "status": "Fallout 1st"
+      },
+      {
+        "name": "チャンプ",
+        "price": "125 Atoms",
+        "status": "50% OFF"
+      },
+      {
+        "name": "キャッシュケージ・パワーアーマースキン",
+        "price": "600 Atoms",
+        "status": "50% OFF"
+      },
+      {
+        "name": "密造酒の作業台",
+        "price": "250 Atoms",
+        "status": "50% OFF"
+      },
+      {
+        "name": "カウボーイバンドル",
+        "price": "900 Atoms",
+        "status": "50% OFF"
+      },
+      {
+        "name": "ヴィトマティック",
+        "price": "Fallout 1st",
+        "status": "Fallout 1st"
+      },
+      {
+        "name": "ウォーキング・ファイアバンドル",
+        "price": "900 Atoms",
+        "status": "Fallout 1st / 50% OFF"
+      }
+    ]
+  },
+  "jsondata_today_dailychallenge.json": {
+    "challenges": [
+      "風船ガムを噛む (0/1)",
+      "ゴールドスター：デイリーチャレンジを完了する (0/6)",
+      "RADアウェイまたはRAD-Xを集める (0/5)",
+      "イベント「The Mothman Equinox」中にラッドスタッグを倒す (0/5)",
+      "プラスチックを含むジャンクを解体する (0/10)",
+      "ワークショップを獲得する (0/1)",
+      "石炭を回収または解体する (0/5)",
+      "積灰の山で敵を倒す (0/5)"
+    ]
+  }
+}
