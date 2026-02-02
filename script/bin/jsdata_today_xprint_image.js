@@ -1,106 +1,77 @@
-// [2026-02-01 21:15:00] Version: 1.9.2 - Layout Restoration Edition
+// [2026-02-02] Version: 1.9.4 - Roadmap Integrated Edition
 const fs = require('fs');
 const path = require('path');
 
+const DATA_DIR = "D:\\nvidia_captures\\data";
 const PATHS = {
-    basic: 'D:\\nvidia_captures\\data\\jsondata_today_basic.json',
-    ops: 'D:\\nvidia_captures\\data\\jsondata_today_ops.json',
-    shop: 'D:\\nvidia_captures\\data\\jsondata_today_atomicshop.json',
-    challenge: 'D:\\nvidia_captures\\data\\jsondata_today_dailychallenge.json',
-    roadmap: 'D:\\nvidia_captures\\data\\jsondata_roadmap_master.json',
-    outputTxt: 'D:\\nvidia_captures\\data\\today_daily_post.txt'
+    basic: path.join(DATA_DIR, "jsondata_today_basic.json"),
+    ops: path.join(DATA_DIR, "jsondata_today_ops.json"),
+    shop: path.join(DATA_DIR, "jsondata_today_atomicshop.json"),
+    output: path.join(DATA_DIR, "today_daily_post.txt")
 };
 
-const ALIAS = {
-    "ウエストテック研究センター": "ウエ研",
-    "スーパーミュータント": "スパミュ",
-    "鋭い視線": "Per増加",
-    "サヴェージ_ストライク": "アーマー貫通",
-    "不安定": "爆発",
-    "氷の手": "氷結",
-    "スティングフロスト": "氷結_毒",
-    "グループ再生": "回復",
-    "素早く": "高速移動"
-};
+const COLORS = { "月": "#FF8C00", "火": "#FF0040", "水": "#00BFFF", "木": "#32CD32", "金": "#FFD700", "土": "#9932CC", "日": "#DC143C" };
 
-function translate(text) {
-    let t = text || "";
-    for (const [key, val] of Object.entries(ALIAS)) {
-        t = t.replace(new RegExp(key, 'g'), val);
-    }
-    return t;
-}
-
-// 開催中イベント判定ロジック
-function isEventActive(dateStr, today) {
-    const range = dateStr.match(/(\d+)\/(\d+)〜(\d+)\/(\d+)/);
-    if (!range) return false;
-    const [_, m1, d1, m2, d2] = range.map(Number);
-    const start = new Date(today.getFullYear(), m1 - 1, d1);
-    let end = new Date(today.getFullYear(), m2 - 1, d2);
-    if (end < start) end.setFullYear(end.getFullYear() + 1); // 年跨ぎ対応
-    return today >= start && today <= end;
-}
+const load = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 
 try {
-    const today = new Date();
-    const basic = JSON.parse(fs.readFileSync(PATHS.basic, 'utf8'));
-    const ops = JSON.parse(fs.readFileSync(PATHS.ops, 'utf8'));
-    const shop = JSON.parse(fs.readFileSync(PATHS.shop, 'utf8'));
-    const challenge = JSON.parse(fs.readFileSync(PATHS.challenge, 'utf8'));
-    const roadmap = JSON.parse(fs.readFileSync(PATHS.roadmap, 'utf8'));
+    const basic = load(PATHS.basic);
+    const ops = load(PATHS.ops);
+    const shop = load(PATHS.shop);
 
-    const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][today.getDay()];
-    let lines = [];
+    const [y, m, d] = basic.date.split('-').map(Number);
+    const dateObj = new Date(y, m - 1, d);
+    const week = ["日", "月", "火", "水", "木", "金", "土"][dateObj.getDay()];
 
-    // 1. ヘッダー（空行なしの密着レイアウト）
-    lines.push("#Fallout76");
-    lines.push("皆様おはようございます😎");
-    lines.push(`${basic.date.replace(/-/g, '/')}（${dayOfWeek}） ${basic.weather}です`);
-    lines.push("");
+    let post = [];
 
-    // 2. 開催中イベント（今日の日付でフィルタリング）
-    let activeEvents = [];
-    roadmap.roadmap.forEach(m => {
-        m.events.forEach(e => {
-            if (isEventActive(e.date, today)) {
-                activeEvents.push(`【開催中】${e.name} (${e.date})`);
-            }
-        });
-    });
-    if (activeEvents.length > 0) {
-        lines.push(...activeEvents);
-        lines.push("");
+    // --- 1. ヘッダー ---
+    post.push(`#Fallout76 #${basic.current_event || ""}`);
+    post.push(`皆様おはようございます😎`);
+    post.push(`${y}年${m}月${d}日${week}${basic.weather}です`);
+    post.push("");
+
+    // --- 2. イベント・ミネルヴァ ---
+    let eventLine = [];
+    if (basic.current_event) eventLine.push(`${basic.current_event}${basic.event_status}`);
+    if (basic.minerva && basic.minerva !== "不在") eventLine.push(`ミネルヴァさんは${basic.minerva}です`);
+    if (eventLine.length > 0) {
+        post.push(eventLine.join('\n'));
+        post.push("");
     }
 
-    // 3. デイリーオプス
-    lines.push(`オプス：${translate(ops.location)} (${translate(ops.faction)})`);
-    lines.push(`変異：${ops.mutations.map(m => translate(m)).join('・')}です`);
-    lines.push("");
+    // --- 3. デイリーオプス ---
+    post.push(ops.mutations.length >= 3 ? "オプスもダブル" : `オプスは${ops.mode}`);
+    post.push(`${ops.location}・${ops.faction}/${ops.mutations.join('・')}です`);
+    post.push("");
 
-    // 4. デイリーチャレンジ（上位5件）
-    lines.push("【今日のデイリー】");
-    challenge.challenges.slice(0, 5).forEach(c => lines.push(`・${c}`));
-    lines.push("");
-
-    // 5. アトミックショップ（無料 & 1st）
-    const freeItems = shop.items.filter(i => i.price === "Free" || i.status.includes("Fallout 1st"));
-    if (freeItems.length > 0) {
-        lines.push("アトショ無料：");
-        freeItems.forEach(i => {
-            lines.push(`・${i.name}${i.status.includes("Fallout 1st") ? " (1st)" : ""}`);
-        });
-        lines.push("");
+    // --- 4. アトミックショップ ---
+    const free = shop.items.filter(i => i.price === "Free" && !i.status.includes("1st"));
+    if (free.length > 0) {
+        free.forEach((item, i) => post.push(item.name + (i === free.length - 1 ? "貰えます" : "")));
     }
+    const sale = shop.items.filter(i => i.status.includes("Sale") && !i.status.includes("1st") && i.price !== "Free");
+    if (sale.length > 0) {
+        post.push("お買い得は。");
+        sale.forEach(i => post.push(i.name));
+    }
+    const first = shop.items.filter(i => i.status.includes("1st"));
+    if (first.length > 0) {
+        post.push("1ST限定。");
+        first.forEach(i => post.push(i.name + (i.price === "Free" || i.status.includes("1st") ? "貰えます" : "")));
+    }
+    post.push("");
 
-    // 6. フッター
-    lines.push("今日も良き日を❤️");
-    lines.push("#32CD32"); // 日曜カラー
+    // --- 5. フッター ---
+    post.push("今日も良き日を♡");
+    post.push(COLORS[week]);
 
-    fs.writeFileSync(PATHS.outputTxt, lines.join('\n'), 'utf8');
-    console.log(">> [Success] 黄金のレイアウトで投稿案を生成しました。");
+    // 最終整形（スペース排除、タグ間のみ許可）
+    let result = post.join('\n').replace(/[ 　]+/g, (m, off, str) => (str[off - 1] === '7' && str[off + 1] === '#') ? ' ' : '');
+    
+    fs.writeFileSync(PATHS.output, result);
+    console.log(`[Success] 黄金比率 v1.9.3 出力完了 (${basic.date})`);
 
-} catch (err) {
-    console.error("❌ 致命的エラー:", err.message);
-    process.exit(1);
+} catch (e) {
+    console.error("[Error]", e.message);
 }
