@@ -1,7 +1,12 @@
 /**
  * Fallout 76 毎日投稿・黄金比率統合エンジン
- * @version 1.2.0 (2026-02-01)
+ * @version 1.2.1 (2026-02-03) - Relative Path Edition
  */
+const fs = require('fs');
+const path = require('path');
+
+// 相対パスの起点（このファイルから見て2つ上のルート > data）
+const DATA_DIR = path.join(__dirname, '..', '..', 'data');
 
 const DOCTOR_ALIAS = {
     "スーパーミュータント": "スパミュ",
@@ -9,7 +14,7 @@ const DOCTOR_ALIAS = {
     "鋭い視線": "Per増加",
     "サヴェージ・ストライク": "アーマー貫通",
     "グループ再生": "回復",
-    "アンステイブル": "素早く+爆発", // 「高速」禁止ルール適用
+    "アンステイブル": "素早く+爆発",
     "アクティブ迷彩": "透明",
     "不安定": "爆発",
     "氷の手": "氷結",
@@ -47,7 +52,7 @@ function generatePost(data) {
 
     // 4. アトミックショップ
     if (data.shopFree) {
-        const freeItem = data.shopFree.replace("無料", ""); // 「無料」文字削除ルール
+        const freeItem = data.shopFree.replace("無料", ""); 
         post += `${freeItem}貰えます\n`;
     }
     if (data.shopSale) {
@@ -62,6 +67,6 @@ function generatePost(data) {
     post += `今日も良き日を♡\n\n`;
     post += `#${COLOR_CODES[data.weekday] || "#FFFFFF"}`;
 
-    // 6. 最終整形（半角スペース排除ルール）
+    // 6. 最終整形
     return post.replace(/ /g, "").replace(/\n{3,}/g, "\n\n");
 }

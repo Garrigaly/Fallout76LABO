@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = "D:\\nvidia_captures\\data";
+const DATA_DIR = path.join(__dirname, '..', '..', 'data');
 const PATHS = {
     basic: path.join(DATA_DIR, "jsondata_today_basic.json"),
     ops: path.join(DATA_DIR, "jsondata_today_ops.json"),

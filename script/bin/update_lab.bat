@@ -2,10 +2,15 @@
 setlocal
 chcp 65001 >nul
 
-set "PY_FILE=D:\nvidia_captures\script\clip_magic.py"
-set "JS_FILE=D:\nvidia_captures\script\bin\jsdata_today_xprint_image.js"
-set "DATA_DIR=D:\nvidia_captures\data"
-set "HIST_DIR=D:\nvidia_captures\history"
+:: [2026-02-03] Relative Path Edition
+:: このバッチファイルがあるフォルダ(script\bin)を起点に設定
+set "BASE_DIR=%~dp0"
+set "ROOT_DIR=%BASE_DIR%..\..\"
+
+set "PY_FILE=%ROOT_DIR%script\clip_magic.py"
+set "JS_FILE=%BASE_DIR%jsdata_today_xprint_image.js"
+set "DATA_DIR=%ROOT_DIR%data"
+set "HIST_DIR=%ROOT_DIR%history"
 
 if not exist "%HIST_DIR%" mkdir "%HIST_DIR%"
 
@@ -17,13 +22,13 @@ if %ERRORLEVEL% neq 0 (
     exit /b
 )
 
-echo [System] 統合エンジン（xprint_image.js）を起動中...
+echo [System] 統合エンジン（jsdata_today_xprint_image.js）を起動中...
 node "%JS_FILE%"
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "$date = Get-Date -Format 'yyyyMMdd_HHmm'; " ^
-    "$src = 'D:\nvidia_captures\data\today_daily_post.txt'; " ^
-    "$dst = 'D:\nvidia_captures\history\post_' + $date + '.txt'; " ^
+    "$src = '%DATA_DIR%\today_daily_post.txt'; " ^
+    "$dst = '%HIST_DIR%\post_' + $date + '.txt'; " ^
     "if (Test-Path $src) { " ^
     "  Copy-Item $src $dst; " ^
     "  Write-Host '📜 履歴を保存しました'; " ^

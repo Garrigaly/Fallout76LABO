@@ -1,12 +1,21 @@
 @echo off
-:: 1. スクリプトがあるディレクトリに移動（これならどこから実行しても安心です）
-cd /d %~dp0
+setlocal
+chcp 65001 >nul
 
-:: 2. NVIDIA Script フォルダへ移動
-cd "NVIDIA Script"
+:: [2026-02-03] Relative Path Edition
+:: このバッチファイルがある場所(script/bin)を起点に設定
+set "BASE_DIR=%~dp0"
 
-:: 3. 処理を実行
-node jsdata_today_xprint_image.js
+echo [System] 黄金比率出力エンジン(xprint_image)を単独起動中...
 
-:: 4. 完了後に少し待機（ログをゆっくり確認したい場合。不要なら削除してください）
-pause
+:: 相対パスでJSを実行
+node "%BASE_DIR%jsondata_today_xprint_image.js"
+
+if %ERRORLEVEL% neq 0 (
+    echo [Error] 実行中にエラーが発生しました。
+    pause
+) else (
+    echo [Success] 処理が完了しました。
+)
+
+timeout /t 3

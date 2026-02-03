@@ -1,47 +1,39 @@
-# 博士専用：仕分け・スマートリネーム・素材リスト(CSV)生成スクリプト
-$root = "d:/nvidia_captures"
-$sources = @("afterburner_png_stills", "afterburner_mkv_clips", "afterburner_mp4_clips")
-$prefix_map = @{ "fallout76" = "f76"; "fallout4" = "f04"; "falloutnv" = "fnv" }
+# [2026-02-03] Relative Path Edition
+# スクリプトがある場所(script/)を起点にルートを設定
+$ScriptPath = $PSScriptRoot
+$RootDir = Split-Path -Parent $ScriptPath
 
-# --- フェーズ1：仕分け (node_modules等を厳密に除外) ---
-$game_folders = get-childitem $root -directory | where-object { $_.name -notmatch "afterburner|node_modules|script|input|output" }
-foreach ($folder in ($sources + $game_folders)) {
-    $source_path = if ($folder -is [string]) { join-path $root $folder } else { $folder.fullname }
-    if (-not (test-path $source_path)) { continue }
-    
-    get-childitem $source_path -file | where-object { $_.name -like "*_*_*_*" } | foreach-object {
-        $parts = $_.name -split "_"
-        if ($parts.count -ge 4) {
-            $game = $parts[0].tolower()
-            $dest_dir = join-path $root (join-path $game ("$game`_" + $parts[1] + $parts[2] + $parts[3]))
-            if (-not (test-path $dest_dir)) { new-item -itemtype directory -path $dest_dir -force | out-null }
-            if (-not (test-path (join-path $dest_dir $_.name))) { move-item $_.fullname $dest_dir -force }
+# 各ディレクトリの設定を相対パスに変更
+$SourceDir = "$RootDir"
+$TargetBaseDir = "$RootDir\processed"
+
+# ログ出力用
+Write-Host "--- 📸 スクリーンショット整理シーケンス開始 ---" -ForegroundColor Cyan
+Write-Host "ソース: $SourceDir"
+Write-Host "移動先: $TargetBaseDir"
+
+# ソースディレクトリ内のPNGファイルをスキャン
+$Files = Get-ChildItem -Path $SourceDir -Filter "*.png"
+
+foreach ($File in $Files) {
+    # ファイル名から日付(YYYY_MM_DD)を抽出
+    if ($File.Name -match "Fallout76_(\d{4}_\d{2}_\d{2})") {
+        $DateString = $Matches[1].Replace("_", "")
+        
+        # 移動先フォルダ名の決定（例：processed_760126）
+        $DestFolderName = "processed_76$($DateString.Substring(2))"
+        $DestPath = Join-Path $TargetBaseDir $DestFolderName
+        
+        # フォルダが存在しなければ作成
+        if (-not (Test-Path $DestPath)) {
+            New-Item -ItemType Directory -Path $DestPath | Out-Null
+            Write-Host "📁 新規フォルダ作成: $DestFolderName" -ForegroundColor Yellow
         }
+        
+        # ファイルの移動
+        Move-Item -Path $File.FullName -Destination $DestPath -Force
+        Write-Host "✅ 移動完了: $($File.Name) -> $DestFolderName"
     }
 }
 
-# --- フェーズ2：リネーム ＆ CSV生成 ---
-write-host "Renaming and generating scene notes..." -foregroundcolor yellow
-foreach ($g_dir in $game_folders) {
-    get-childitem $g_dir.fullname -directory | foreach-object {
-        $s_dir = $_
-        $prefix = if ($prefix_map.contains($g_dir.name)) { $prefix_map[$g_dir.name] } else { $g_dir.name.substring(0, [math]::min(3, $g_dir.name.length)) }
-        $mmdd = if ($s_dir.name -match "(\d{4})$") { $matches[1] } else { "0000" }
-
-        $inner_files = get-childitem $s_dir.fullname -file | where-object { $_.name -notmatch "csv$" } | sort-object lastwritetime
-        $digit_format = if ($inner_files.count -ge 100) { "d3" } else { "d2" }
-
-        $count = 1
-        $csv_data = @()
-        foreach ($f in $inner_files) {
-            $new_name = "{0}_{1}_{2:$digit_format}{3}" -f $prefix, $mmdd, $count, $f.extension
-            $new_path = join-path $s_dir.fullname $new_name
-            if ($f.fullname -ne $new_path -and -not (test-path $new_path)) { rename-item $f.fullname -newname $new_name -force }
-            $csv_data += [pscustomobject]@{ "file_name" = $new_name; "note" = "" }
-            $count++
-        }
-        $csv_path = join-path $s_dir.fullname "scene_notes.csv"
-        if (-not (test-path $csv_path)) { $csv_data | export-csv -path $csv_path -notypeinformation -encoding utf8 }
-    }
-}
-write-host "Done, Doctor! All systems operational." -foregroundcolor green
+Write-Host "--- 整理完了 ---" -ForegroundColor Cyan
