@@ -12,3 +12,4 @@ data/
 
 # ログファイル
 *.log
+node_modules/
